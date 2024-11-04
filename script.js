@@ -83,11 +83,12 @@ function moveDown() {
     renderBoard();
 }
 
+// Event listener for both W, A, S, D and Arrow keys
 document.addEventListener('keydown', event => {
-    if (event.key === 'a' || event.key === 'A') moveLeft();
-    if (event.key === 'd' || event.key === 'D') moveRight();
-    if (event.key === 'w' || event.key === 'W') moveUp();
-    if (event.key === 's' || event.key === 'S') moveDown();
+    if (event.key === 'a' || event.key === 'A' || event.key === 'ArrowLeft') moveLeft();
+    if (event.key === 'd' || event.key === 'D' || event.key === 'ArrowRight') moveRight();
+    if (event.key === 'w' || event.key === 'W' || event.key === 'ArrowUp') moveUp();
+    if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown') moveDown();
 });
 
 initBoard();
