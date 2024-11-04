@@ -1,5 +1,5 @@
 const boardSize = 5;
-const board = Array(boardSize * boardSize).fill(0);
+let board = Array(boardSize * boardSize).fill(0);
 const gameBoardElement = document.getElementById('game-board');
 
 // Initialize board layout
@@ -8,6 +8,7 @@ function initBoard() {
     for (let i = 0; i < boardSize * boardSize; i++) {
         const tileElement = document.createElement('div');
         tileElement.classList.add('tile');
+        tileElement.dataset.value = 0;
         gameBoardElement.appendChild(tileElement);
     }
     spawnTile();
@@ -24,9 +25,10 @@ function spawnTile() {
 }
 
 function renderBoard() {
-    gameBoardElement.childNodes.forEach((tile, index) => {
-        tile.textContent = board[index] !== 0 ? board[index] : '';
-        tile.style.backgroundColor = board[index] !== 0 ? '#f2b179' : '#cdc1b4';
+    board.forEach((value, index) => {
+        const tile = gameBoardElement.children[index];
+        tile.textContent = value === 0 ? '' : value;
+        tile.dataset.value = value;
     });
 }
 
@@ -91,4 +93,4 @@ document.addEventListener('keydown', event => {
     if (event.key === 's' || event.key === 'S' || event.key === 'ArrowDown') moveDown();
 });
 
-initBoard();
+in
