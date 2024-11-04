@@ -1,16 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048 Game - 5x5 Grid</title>
-    <link rel="stylesheet" href="style.css">
+    <title>2048</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+
+        .grid-item {
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>2048 Game - 5x5 Grid</h1>
-    <div class="game-container">
-        <div id="game-board"></div>
-    </div>
-    <script src="script.js"></script>
+    <div class="grid-container" id="game-board"></div>
+    <script>
+        const gridSize = 4;
+        const grid = [];
+        let score = 0;
+
+        function initializeGrid() {
+            for (let i = 0; i < gridSize; i++) {
+                grid[i] = [];
+                for (let j = 0; j < gridSize; j++) {
+                    grid[i][j] = 0;
+                }
+            }
+            addRandomTile();
+            addRandomTile();
+        }
+
+        function addRandomTile() {
+            let emptyCells = [];
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    if (grid[i][j] === 0) {
+                        emptyCells.push({ x: i, y: j });
+                    }
+                }
+            }
+
+            if (emptyCells.length > 0) {
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                const { x, y } = emptyCells[randomIndex];
+                grid[x][y] = Math.random() < 0.5 ? 2 : 4;
+            }
+        }
+
+        function slideTiles(direction) {
+            let moved = false;
+            switch (direction) {
+                case 'up':
+                    for (let i = 1; i < gridSize; i++) {
+                        for (let j = 0; j < gridSize; j++) {
+                            if (grid[i][j] !== 0) {
+                                let k = i - 1;
+                                while (k >= 0 && grid[k][j] === 0) {
+                                    grid[k][j] = grid[k + 1][j];
+                                    grid[k + 1][j] = 0;
+                                    k--;
+                                    moved = true;
+                                }
+                                if (k >= 0 && grid[k][j] === grid[k + 1][j]) {
+                                    grid[k][j] *= 2;
+                                    grid[k + 1][j] = 0;
+                                    score += grid[k][j];
+                                    moved = true;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                // ... (similar logic for 'down', 'left', and 'right')
+            }
+            return moved;
+        }
+
+        function isGameOver() {
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    if (grid[i][j] === 0) {
+                        return false;
+                    }
+                    if (i < gridSize - 1 && grid[i][j] === grid[i + 1][j]) {
+                        return false;
+                    }
+                    if (j < gridSize - 1 && grid[i][j] === grid[i][j + 1]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function updateBoard() {
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const tile = document.createElement('div');
+                    tile.classList.add('grid-item');
+                    tile.textContent = grid[i][j] || '';
+                    gameBoard.appendChild(tile);
+                }
+            }
+        }
+
+        initializeGrid();
+        updateBoard();
+
+        document.addEventListener('keydown', (event) => {
+            let moved = false;
+            switch (event.key) {
+                case 'ArrowUp':
+                    moved = slideTiles('up');
+                    break;
+                case 'ArrowDown':
+                    moved = slideTiles('down');
+                    break;
+                case 'ArrowLeft':
+                    moved = slideTiles('left');
+                    break;
+                case 'ArrowRight':
+                    moved = slideTiles('right');
+                    break;
+            }
+            if (moved) {
+                addRandomTile();
+                updateBoard();
+                if (isGameOver()) {
+                    alert('Game Over!');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
