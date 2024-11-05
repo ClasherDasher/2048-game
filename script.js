@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCell(squares[randomIndex], Math.random() < 0.9 ? 2 : 4);
     }
 
+    // Movement functions must be defined before being called
     function move(direction) {
         const oldValues = squares.map(cell => cell.getAttribute('data-value'));
         if (direction === 'right') moveRight();
@@ -149,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowUp' || e.key === 'W') move('up');
         if (e.key === 'ArrowDown' || e.key === 'S') move('down');
     });
+
     restartButton.addEventListener('click', restartGame);
 
     createBoard();
