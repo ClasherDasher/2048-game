@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let squares = [];
   let score = 0;
 
-  // Create the game board
   function createBoard() {
     gridDisplay.innerHTML = '';
     squares = [];
@@ -20,13 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     generateNewTile();
   }
 
-  // Update cell display
   function updateCell(cell, value) {
     cell.setAttribute('data-value', value);
     cell.innerHTML = value > 0 ? value : '';
   }
 
-  // Generate a new tile (2 or 4)
   function generateNewTile() {
     let randomIndex = Math.floor(Math.random() * squares.length);
     while (squares[randomIndex].getAttribute('data-value') != '0') {
@@ -35,18 +32,32 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCell(squares[randomIndex], Math.random() < 0.9 ? 2 : 4);
   }
 
-  // Movement functions
-  function moveUp() {
-    for (let i = 0; i < 4; i++) {
-      let column = [
-        parseInt(squares[i].getAttribute('data-value')),
-        parseInt(squares[i + 4].getAttribute('data-value')),
-        parseInt(squares[i + 8].getAttribute('data-value')),
-        parseInt(squares[i + 12].getAttribute('data-value')),
-      ];
-      let newColumn = slide(column);
-      for (let j = 0; j < 4; j++) {
-        updateCell(squares[i + j * 4], newColumn[j]);
+  function move(direction) {
+    const oldValues = squares.map(cell => cell.getAttribute('data-value'));
+    if (direction === 'right') moveRight();
+    if (direction === 'left') moveLeft();
+    if (direction === 'up') moveUp();
+    if (direction === 'down') moveDown();
+
+    if (JSON.stringify(oldValues) !== JSON.stringify(squares.map(cell => cell.getAttribute('data-value'))))) {
+      generateNewTile();
+    }
+    checkForGameOver();
+  }
+
+  function moveRight() {
+    for (let i = 0; i < 16; i++) {
+      if (i % 4 === 0) {
+        let row = [
+          parseInt(squares[i].getAttribute('data-value')),
+          parseInt(squares[i + 1].getAttribute('data-value')),
+          parseInt(squares[i + 2].getAttribute('data-value')),
+          parseInt(squares[i + 3].getAttribute('data-value')),
+        ];
+        let newRow = slide(row);
+        for (let j = 0; j < 4; j++) {
+          updateCell(squares[i + j], newRow[j]);
+        }
       }
     }
   }
@@ -68,6 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function moveUp() {
+    for (let i = 0; i < 4; i++) {
+      let column = [
+        parseInt(squares[i].getAttribute('data-value')),
+        parseInt(squares[i + 4].getAttribute('data-value')),
+        parseInt(squares[i + 8].getAttribute('data-value')),
+        parseInt(squares[i + 12].getAttribute('data-value')),
+      ];
+      let newColumn = slide(column);
+      for (let j = 0; j < 4; j++) {
+        updateCell(squares[i + j * 4], newColumn[j]);
+      }
+    }
+  }
+
   function moveDown() {
     for (let i = 0; i < 4; i++) {
       let column = [
@@ -79,23 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let newColumn = slide(column.reverse()).reverse();
       for (let j = 0; j < 4; j++) {
         updateCell(squares[i + j * 4], newColumn[j]);
-      }
-    }
-  }
-
-  function moveRight() {
-    for (let i = 0; i < 16; i++) {
-      if (i % 4 === 0) {
-        let row = [
-          parseInt(squares[i].getAttribute('data-value')),
-          parseInt(squares[i + 1].getAttribute('data-value')),
-          parseInt(squares[i + 2].getAttribute('data-value')),
-          parseInt(squares[i + 3].getAttribute('data-value')),
-        ];
-        let newRow = slide(row);
-        for (let j = 0; j < 4; j++) {
-          updateCell(squares[i + j], newRow[j]);
-        }
       }
     }
   }
@@ -135,18 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keyup', (e) => {
-    function move(direction) {
-      if (direction === 'right') moveRight();
-      if (direction === 'left') moveLeft();
-      if (direction === 'up') moveUp();
-      if (direction === 'down') moveDown();
-
-      if (JSON.stringify(oldValues) !== JSON.stringify(squares.map(cell => cell.getAttribute('data-value')))) {
-        generateNewTile();
-      }
-      checkForGameOver();
-    }
-
     if (e.key === 'ArrowRight' || e.key === 'D') move('right');
     if (e.key === 'ArrowLeft' || e.key === 'A') move('left');
     if (e.key === 'ArrowUp' || e.key === 'W') move('up');
