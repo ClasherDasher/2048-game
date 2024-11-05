@@ -136,11 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
         createBoard();
     }
 
+    // Prevent arrow keys from scrolling
+    document.addEventListener('keydown', (e) => {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "W", "A", "S", "D"].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+
     document.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowRight') move('right');
-        if (e.key === 'ArrowLeft') move('left');
-        if (e.key === 'ArrowUp') move('up');
-        if (e.key === 'ArrowDown') move('down');
+        if (e.key === 'ArrowRight' || e.key === 'D') move('right');
+        if (e.key === 'ArrowLeft' || e.key === 'A') move('left');
+        if (e.key === 'ArrowUp' || e.key === 'W') move('up');
+        if (e.key === 'ArrowDown' || e.key === 'S') move('down');
     });
     restartButton.addEventListener('click', restartGame);
 
