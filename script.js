@@ -62,21 +62,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function slide(row) {
-        let filteredRow = row.filter(num => num);
-        let missing = 4 - filteredRow.length;
-        let zeros = Array(missing).fill(0);
-        filteredRow = zeros.concat(filteredRow);
+    function moveLeft() {
+        for (let i = 0; i < 16; i++) {
+            if (i % 4 === 0) {
+                let row = [
+                    parseInt(squares[i].getAttribute('data-value')),
+                    parseInt(squares[i + 1].getAttribute('data-value')),
+                    parseInt(squares[i + 2].getAttribute('data-value')),
+                    parseInt(squares[i + 3].getAttribute('data-value')),
+                ];
+                let newRow = slide(row.reverse()).reverse();
+                for (let j = 0; j < 4; j++) {
+                    updateCell(squares[i + j], newRow[j]);
+                }
+            }
+        }
+    }
+
+    function moveUp() {
+        for (let i = 0; i < 4; i++) {
+            let column = [
+                parseInt(squares[i].getAttribute('data-value')),
+                parseInt(squares[i + 4].getAttribute('data-value')),
+                parseInt(squares[i + 8].getAttribute('data-value')),
+                parseInt(squares[i + 12].getAttribute('data-value')),
+            ];
+            let newColumn = slide(column);
+            for (let j = 0; j < 4; j++) {
+                updateCell(squares[i + j * 4], newColumn[j]);
+            }
+        }
+    }
+
+    function moveDown() {
+        for (let i = 0; i < 4; i++) {
+            let column = [
+                parseInt(squares[i].getAttribute('data-value')),
+                parseInt(squares[i + 4].getAttribute('data-value')),
+                parseInt(squares[i + 8].getAttribute('data-value')),
+                parseInt(squares[i + 12].getAttribute('data-value')),
+            ];
+            let newColumn = slide(column.reverse()).reverse();
+            for (let j = 0; j < 4; j++) {
+                updateCell(squares[i + j * 4], newColumn[j]);
+            }
+        }
+    }
+
+    function slide(array) {
+        let filtered = array.filter(num => num);
+        let missing = 4 - filtered.length;
+        let newArray = Array(missing).fill(0).concat(filtered);
 
         for (let i = 3; i > 0; i--) {
-            if (filteredRow[i] === filteredRow[i - 1] && filteredRow[i] !== 0) {
-                filteredRow[i] *= 2;
-                filteredRow[i - 1] = 0;
-                score += filteredRow[i];
+            if (newArray[i] === newArray[i - 1] && newArray[i] !== 0) {
+                newArray[i] *= 2;
+                newArray[i - 1] = 0;
+                score += newArray[i];
                 scoreDisplay.innerHTML = score;
             }
         }
-        return zeros.concat(filteredRow.filter(num => num));
+        return Array(missing).fill(0).concat(newArray.filter(num => num));
     }
 
     function checkForGameOver() {
