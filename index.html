@@ -1,103 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>2048</title>
-    <style>
-        body {
-            background-color: #f0f0f0;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-            margin: 20px auto;
-            border: 1px solid black;
-        }
-
-        .grid-item {
-            width: 100px;
-            height: 100px;
-            border: 1px solid black;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #ccc;
-        }
-
-        /* Tile colors */
-        .tile-2 { background-color: #eee; }
-        .tile-4 { background-color: #ccc; }
-        .tile-8 { background-color: #aaa; }
-        .tile-16 { background-color: #888; }
-        .tile-32 { background-color: #666; }
-        .tile-64 { background-color: #444; }
-        .tile-128 { background-color: #222; }
-        .tile-256 { background-color: #000; color: #fff; }
-        .tile-512 { background-color: #f00; color: #fff; }
-        .tile-1024 { background-color: #0ff; color: #000; }
-        .tile-2048 { background-color: #f0f; color: #000; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="grid-container" id="game-board"></div>
-    <p id="score">Score: 0</p>
-    <script>
-        const gridSize = 4;
-        let grid = [];
-        let score = 0;
-
-        function initializeGrid() {
-            // ... (same as before)
-        }
-
-        function addRandomTile() {
-            // ... (same as before)
-        }
-
-        function slideTiles(direction) {
-            // ... (same as before)
-        }
-
-        function isGameOver() {
-            // ... (same as before)
-        }
-
-        function updateBoard() {
-            // ... (same as before)
-        }
-
-        initializeGrid();
-        updateBoard();
-
-        document.addEventListener('keydown', (event) => {
-            let moved = false;
-            switch (event.key) {
-                case 'ArrowUp':
-                case 'w':
-                    moved = slideTiles('up');
-                    break;
-                case 'ArrowDown':
-                case 's':
-                    moved = slideTiles('down');
-                    break;
-                case 'ArrowLeft':
-                case 'a':
-                    moved = slideTiles('left');
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                    moved = slideTiles('right');
-                    break;
-            }
-            if (moved) {
-                addRandomTile();
-                updateBoard();
-                if (isGameOver()) {
-                    alert('Game Over!');
-                }
-            }
-        });
-    </script>
+    <div class="game-container">
+        <h1>2048</h1>
+        <div class="score-container">
+            Score: <span id="score">0</span>
+        </div>
+        <div class="grid">
+            <!-- Grid cells will be added here by JavaScript -->
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
