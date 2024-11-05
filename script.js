@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gridDisplay = document.querySelector('.grid');
     const scoreDisplay = document.getElementById('score');
+    const topScoreDisplay = document.getElementById('top-score');
     const restartButton = document.getElementById('restart');
     let squares = [];
     let score = 0;
+    let topScore = 0;
 
     // Create the game board
     function createBoard() {
@@ -24,6 +26,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCell(cell, value) {
         cell.setAttribute('data-value', value);
         cell.innerHTML = value > 0 ? value : '';
+        cell.style.backgroundColor = getTileColor(value);
+    }
+
+    function getTileColor(value) {
+        switch (value) {
+            case 2: return '#eee4da';
+            case 4: return '#ede0c8';
+            case 8: return '#f2b179';
+            case 16: return '#f59563';
+            case 32: return '#f67c5f';
+            case 64: return '#f7603b';
+            case 128: return '#f9e79f';
+            case 256: return '#f9c74f';
+            case 512: return '#90ee90';
+            case 1024: return '#43a047';
+            case 2048: return '#3e8e41';
+            default: return '#ccc0b3';
+        }
     }
 
     // Generate a new tile (2 or 4)
@@ -45,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (JSON.stringify(oldValues) !== JSON.stringify(squares.map(cell => cell.getAttribute('data-value')))) {
             generateNewTile();
+            updateTopScore();
         }
         checkForGameOver();
     }
@@ -123,10 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 newArray[i] *= 2;
                 newArray[i - 1] = 0;
                 score += newArray[i];
-                scoreDisplay.innerHTML = score;
+                scoreDisplay.innerHTML = `Score: ${score}`;
             }
         }
         return Array(missing).fill(0).concat(newArray.filter(num => num));
+    }
+
+    function updateTopScore() {
+        if (score > topScore) {
+            topScore = score;
+            topScoreDisplay.innerHTML = `Top Score: ${topScore}`;
+        }
     }
 
     function checkForGameOver() {
@@ -136,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function restartGame() {
         score = 0;
-        scoreDisplay.innerHTML = score;
+        scoreDisplay.innerHTML = `Score: ${score}`;
         createBoard();
     }
 
