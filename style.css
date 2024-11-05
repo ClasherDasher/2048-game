@@ -33,9 +33,34 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: transform 0.1s ease;
+}
+
+.cell:not(:empty) {
+    animation: pop-in 0.2s ease;
+}
+
+.cell[data-value="0"] {
+    visibility: hidden;
 }
 
 .score-container {
     margin-bottom: 20px;
     font-size: 24px;
+}
+
+#restart {
+    margin: 15px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
