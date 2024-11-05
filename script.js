@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
 
     function createBoard() {
-        gridDisplay.innerHTML = '';  // Clear existing cells
+        gridDisplay.innerHTML = '';
         squares = [];
         for (let i = 0; i < 16; i++) {
             const cell = document.createElement('div');
@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateCell(cell, value) {
         cell.setAttribute('data-value', value);
-        cell.innerHTML = value > 0 ? value : '';  // Only show non-zero values
-        cell.classList.remove('merge');
-        if (value > 0) cell.classList.add('merge');
+        cell.innerHTML = value > 0 ? value : '';
     }
 
     function generateNewTile() {
@@ -32,6 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
             randomIndex = Math.floor(Math.random() * squares.length);
         }
         updateCell(squares[randomIndex], Math.random() < 0.9 ? 2 : 4);
+    }
+
+    function move(direction) {
+        const oldValues = squares.map(cell => cell.getAttribute('data-value'));
+        if (direction === 'right') moveRight();
+        if (direction === 'left') moveLeft();
+        if (direction === 'up') moveUp();
+        if (direction === 'down') moveDown();
+
+        if (JSON.stringify(oldValues) !== JSON.stringify(squares.map(cell => cell.getAttribute('data-value')))) {
+            generateNewTile();
+        }
+        checkForGameOver();
     }
 
     function moveRight() {
@@ -43,11 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     parseInt(squares[i + 2].getAttribute('data-value')),
                     parseInt(squares[i + 3].getAttribute('data-value')),
                 ];
-                let filteredRow = row.filter(num => num);
-                let missing = 4 - filteredRow.length;
-                let zeros = Array(missing).fill(0);
-                let newRow = zeros.concat(filteredRow);
-
+                let newRow = slide(row);
                 for (let j = 0; j < 4; j++) {
                     updateCell(squares[i + j], newRow[j]);
                 }
@@ -55,30 +62,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function combineRow() {
-        for (let i = 0; i < 15; i++) {
-            if (squares[i].getAttribute('data-value') === squares[i + 1].getAttribute('data-value') && squares[i].getAttribute('data-value') != '0') {
-                let combinedTotal = parseInt(squares[i].getAttribute('data-value')) * 2;
-                updateCell(squares[i], combinedTotal);
-                updateCell(squares[i + 1], 0);
-                score += combinedTotal;
+    function slide(row) {
+        let filteredRow = row.filter(num => num);
+        let missing = 4 - filteredRow.length;
+        let zeros = Array(missing).fill(0);
+        filteredRow = zeros.concat(filteredRow);
+
+        for (let i = 3; i > 0; i--) {
+            if (filteredRow[i] === filteredRow[i - 1] && filteredRow[i] !== 0) {
+                filteredRow[i] *= 2;
+                filteredRow[i - 1] = 0;
+                score += filteredRow[i];
                 scoreDisplay.innerHTML = score;
             }
         }
-    }
-
-    function control(e) {
-        if (e.keyCode === 39) moveRight();
-        combineRow();
-        generateNewTile();
-        checkForGameOver();
+        return zeros.concat(filteredRow.filter(num => num));
     }
 
     function checkForGameOver() {
-        let isGameOver = true;
-        squares.forEach(square => {
-            if (square.getAttribute('data-value') == '0') isGameOver = false;
-        });
+        let isGameOver = squares.every(square => square.getAttribute('data-value') != '0');
         if (isGameOver) alert('Game Over!');
     }
 
@@ -88,7 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
         createBoard();
     }
 
-    document.addEventListener('keyup', control);
+    document.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowRight') move('right');
+        if (e.key === 'ArrowLeft') move('left');
+        if (e.key === 'ArrowUp') move('up');
+        if (e.key === 'ArrowDown') move('down');
+    });
     restartButton.addEventListener('click', restartGame);
 
     createBoard();
