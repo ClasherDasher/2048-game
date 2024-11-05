@@ -9,16 +9,19 @@
 <body>
     <div class="game-container">
         <h1>2048 Game</h1>
-        <div class="grid"></div>
-        <div id="score">0</div>
-        <button id="restart">Restart</button>
+        <div class="score-board">
+            <div id="score">Score: 0</div>
+            <div id="top-score">Top Score: 0</div>
+        </div>
         <div class="controls">
             <h2>Controls</h2>
             <p>Use <strong>W</strong> to move Up</p>
             <p>Use <strong>A</strong> to move Left</p>
             <p>Use <strong>S</strong> to move Down</p>
             <p>Use <strong>D</strong> to move Right</p>
+            <button id="restart">Restart</button>
         </div>
+        <div class="grid"></div>
     </div>
     <script src="script.js"></script>
 </body>
