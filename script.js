@@ -135,6 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keyup', (e) => {
+    function move(direction) {
+      if (direction === 'right') moveRight();
+      if (direction === 'left') moveLeft();
+      if (direction === 'up') moveUp();
+      if (direction === 'down') moveDown();
+
+      if (JSON.stringify(oldValues) !== JSON.stringify(squares.map(cell => cell.getAttribute('data-value')))) {
+        generateNewTile();
+      }
+      checkForGameOver();
+    }
+
     if (e.key === 'ArrowRight' || e.key === 'D') move('right');
     if (e.key === 'ArrowLeft' || e.key === 'A') move('left');
     if (e.key === 'ArrowUp' || e.key === 'W') move('up');
