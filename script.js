@@ -1,15 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gridDisplay = document.querySelector('.grid');
     const scoreDisplay = document.getElementById('score');
+    const restartButton = document.getElementById('restart');
     let squares = [];
     let score = 0;
 
-    // Create the game board
     function createBoard() {
+        gridDisplay.innerHTML = '';  // Clear existing cells
+        squares = [];
         for (let i = 0; i < 16; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.innerHTML = 0;
+            cell.setAttribute('data-value', '0');
             gridDisplay.appendChild(cell);
             squares.push(cell);
         }
@@ -17,68 +19,77 @@ document.addEventListener('DOMContentLoaded', () => {
         generateNewTile();
     }
 
-    // Generate a new tile (2 or 4)
-    function generateNewTile() {
-        let randomIndex = Math.floor(Math.random() * squares.length);
-        while (squares[randomIndex].innerHTML != 0) {
-            randomIndex = Math.floor(Math.random() * squares.length);
-        }
-        squares[randomIndex].innerHTML = Math.random() < 0.9 ? 2 : 4;
+    function updateCell(cell, value) {
+        cell.setAttribute('data-value', value);
+        cell.innerHTML = value > 0 ? value : '';  // Only show non-zero values
+        cell.classList.remove('merge');
+        if (value > 0) cell.classList.add('merge');
     }
 
-    // Move tiles
+    function generateNewTile() {
+        let randomIndex = Math.floor(Math.random() * squares.length);
+        while (squares[randomIndex].getAttribute('data-value') != '0') {
+            randomIndex = Math.floor(Math.random() * squares.length);
+        }
+        updateCell(squares[randomIndex], Math.random() < 0.9 ? 2 : 4);
+    }
+
     function moveRight() {
         for (let i = 0; i < 16; i++) {
             if (i % 4 === 0) {
                 let row = [
-                    parseInt(squares[i].innerHTML),
-                    parseInt(squares[i + 1].innerHTML),
-                    parseInt(squares[i + 2].innerHTML),
-                    parseInt(squares[i + 3].innerHTML),
+                    parseInt(squares[i].getAttribute('data-value')),
+                    parseInt(squares[i + 1].getAttribute('data-value')),
+                    parseInt(squares[i + 2].getAttribute('data-value')),
+                    parseInt(squares[i + 3].getAttribute('data-value')),
                 ];
                 let filteredRow = row.filter(num => num);
                 let missing = 4 - filteredRow.length;
                 let zeros = Array(missing).fill(0);
                 let newRow = zeros.concat(filteredRow);
 
-                squares[i].innerHTML = newRow[0];
-                squares[i + 1].innerHTML = newRow[1];
-                squares[i + 2].innerHTML = newRow[2];
-                squares[i + 3].innerHTML = newRow[3];
+                for (let j = 0; j < 4; j++) {
+                    updateCell(squares[i + j], newRow[j]);
+                }
             }
         }
     }
 
-    // Combine row
     function combineRow() {
         for (let i = 0; i < 15; i++) {
-            if (squares[i].innerHTML === squares[i + 1].innerHTML && squares[i].innerHTML != 0) {
-                let combinedTotal = parseInt(squares[i].innerHTML) * 2;
-                squares[i].innerHTML = combinedTotal;
-                squares[i + 1].innerHTML = 0;
+            if (squares[i].getAttribute('data-value') === squares[i + 1].getAttribute('data-value') && squares[i].getAttribute('data-value') != '0') {
+                let combinedTotal = parseInt(squares[i].getAttribute('data-value')) * 2;
+                updateCell(squares[i], combinedTotal);
+                updateCell(squares[i + 1], 0);
                 score += combinedTotal;
                 scoreDisplay.innerHTML = score;
             }
         }
     }
 
-    // Control functions
     function control(e) {
         if (e.keyCode === 39) moveRight();
         combineRow();
         generateNewTile();
         checkForGameOver();
     }
-    
-    // Check for Game Over
+
     function checkForGameOver() {
         let isGameOver = true;
         squares.forEach(square => {
-            if (square.innerHTML == 0) isGameOver = false;
+            if (square.getAttribute('data-value') == '0') isGameOver = false;
         });
         if (isGameOver) alert('Game Over!');
     }
 
+    function restartGame() {
+        score = 0;
+        scoreDisplay.innerHTML = score;
+        createBoard();
+    }
+
     document.addEventListener('keyup', control);
+    restartButton.addEventListener('click', restartGame);
+
     createBoard();
 });
