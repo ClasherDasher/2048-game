@@ -22,6 +22,8 @@ body {
     background-color: #bbada0;
     padding: 10px;
     border-radius: 5px;
+    position: relative;
+    border: 4px solid #bbada0; /* Grid outline */
 }
 
 .cell {
@@ -33,8 +35,20 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.1s ease;
+    transition: transform 0.2s ease-in-out;
 }
+
+.cell[data-value="2"] { background-color: #eee4da; color: #776e65; }
+.cell[data-value="4"] { background-color: #ede0c8; color: #776e65; }
+.cell[data-value="8"] { background-color: #f2b179; color: #f9f6f2; }
+.cell[data-value="16"] { background-color: #f59563; color: #f9f6f2; }
+.cell[data-value="32"] { background-color: #f67c5f; color: #f9f6f2; }
+.cell[data-value="64"] { background-color: #f65e3b; color: #f9f6f2; }
+.cell[data-value="128"] { background-color: #edcf72; color: #f9f6f2; }
+.cell[data-value="256"] { background-color: #edcc61; color: #f9f6f2; }
+.cell[data-value="512"] { background-color: #edc850; color: #f9f6f2; }
+.cell[data-value="1024"] { background-color: #edc53f; color: #f9f6f2; }
+.cell[data-value="2048"] { background-color: #edc22e; color: #f9f6f2; }
 
 .cell:not(:empty) {
     animation: pop-in 0.2s ease;
@@ -57,10 +71,6 @@ body {
 }
 
 @keyframes pop-in {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
 }
