@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let squares = [];
     let score = 0;
 
+    // Create the game board
     function createBoard() {
         gridDisplay.innerHTML = '';
         squares = [];
@@ -19,11 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
         generateNewTile();
     }
 
+    // Update cell display
     function updateCell(cell, value) {
         cell.setAttribute('data-value', value);
         cell.innerHTML = value > 0 ? value : '';
     }
 
+    // Generate a new tile (2 or 4)
     function generateNewTile() {
         let randomIndex = Math.floor(Math.random() * squares.length);
         while (squares[randomIndex].getAttribute('data-value') != '0') {
@@ -32,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCell(squares[randomIndex], Math.random() < 0.9 ? 2 : 4);
     }
 
-    // Movement functions must be defined before being called
+    // Movement functions
     function move(direction) {
         const oldValues = squares.map(cell => cell.getAttribute('data-value'));
         if (direction === 'right') moveRight();
